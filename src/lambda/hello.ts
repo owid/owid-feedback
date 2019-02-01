@@ -24,15 +24,28 @@ export async function sendMail(options: nodemailer.SendMailOptions): Promise<any
 }
 
 const handler: Handler = (event: APIGatewayEvent, context: Context, callback: Callback) => {
-    sendMail({
-        from: "test@foo.com",
-        to: "misprime@gmail.com",
-        subject: "test",
-        text: `some test feedback`
-    }).then(() => console.log("Message sent"))
-    .catch((err) => console.error(err))
+    if (event.httpMethod === "POST") {
+        const data = JSON.parse(event.body)
+
+        let shortMessage = data.message.split(" ").slice(0, 10).join(" ")
+        if (shortMessage.length < data.message.length)
+            shortMessage += "..."
+
+        sendMail({
+            from: `${data.name} <${data.email}>`,
+            to: "misprime@gmail.com",
+            subject: shortMessage,
+            text: data.message
+        }).then(() => console.log("Message sent"))
+        .catch((err) => console.error(err))
+    }
 
     callback(null, {
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT, DELETE",
+            "Access-Control-Allow-Headers": "Content-Type, Access-Control-Allow-Headers, X-Requested-With"
+        },
         statusCode: 200,
         body: "done",
     });    
