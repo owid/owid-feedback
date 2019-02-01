@@ -27,17 +27,19 @@ const handler: Handler = (event: APIGatewayEvent, context: Context, callback: Ca
     if (event.httpMethod === "POST") {
         const data = JSON.parse(event.body)
 
-        let shortMessage = data.message.split(" ").slice(0, 10).join(" ")
-        if (shortMessage.length < data.message.length)
-            shortMessage += "..."
-
-        sendMail({
-            from: `${data.name} <${data.email}>`,
-            to: "info@ourworldindata.org",
-            subject: `User Feedback: ${shortMessage}`,
-            text: data.message
-        }).then(() => console.log("Message sent"))
-        .catch((err) => console.error(err))
+        if (data.message && data.message.length) {
+            let shortMessage = data.message.split(" ").slice(0, 10).join(" ")
+            if (shortMessage.length < data.message.length)
+                shortMessage += "..."
+    
+            sendMail({
+                from: `${data.name} <${data.email}>`,
+                to: "info@ourworldindata.org",
+                subject: `User Feedback: ${shortMessage}`,
+                text: data.message
+            }).then(() => console.log("Message sent"))
+            .catch((err) => console.error(err))    
+        }
     }
 
     callback(null, {
