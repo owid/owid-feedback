@@ -33,7 +33,7 @@ const handler: Handler = (event: APIGatewayEvent, context: Context, callback: Ca
 
         sendMail({
             from: `${data.name} <${data.email}>`,
-            to: "misprime@gmail.com",
+            to: "info@ourworldindata.org",
             subject: shortMessage,
             text: data.message
         }).then(() => console.log("Message sent"))
