@@ -33,7 +33,8 @@ const handler: Handler = (event: APIGatewayEvent, context: Context, callback: Ca
                 shortMessage += "..."
     
             sendMail({
-                from: `${data.name} <${data.email}>`,
+                from: `OWID Feedback <feedback@ourworldindata.org>`,
+                replyTo: `${data.name} <${data.email}>`,
                 to: "info@ourworldindata.org",
                 subject: `User Feedback: ${shortMessage}`,
                 text: data.message
