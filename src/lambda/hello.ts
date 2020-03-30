@@ -31,15 +31,15 @@ const handler: Handler = (event: APIGatewayEvent, context: Context, callback: Ca
             let shortMessage = data.message.split(" ").slice(0, 10).join(" ")
             if (shortMessage.length < data.message.length)
                 shortMessage += "..."
-    
+
             sendMail({
-                from: `OWID Feedback <feedback@ourworldindata.org>`,
+                from: `${data.name} <feedback@ourworldindata.org>`,
                 replyTo: `${data.name} <${data.email}>`,
                 to: "info@ourworldindata.org",
                 subject: `User Feedback: ${shortMessage}`,
                 text: data.message
             }).then(() => console.log("Message sent"))
-            .catch((err) => console.error(err))    
+            .catch((err) => console.error(err))
         }
     }
 
@@ -51,7 +51,7 @@ const handler: Handler = (event: APIGatewayEvent, context: Context, callback: Ca
         },
         statusCode: 200,
         body: "done",
-    });    
+    });
 };
 
 export { handler }
