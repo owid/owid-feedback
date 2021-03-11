@@ -26,10 +26,10 @@ export async function sendMail(options: nodemailer.SendMailOptions): Promise<any
 const handler: Handler = (event: APIGatewayEvent, context: Context, callback: Callback) => {
     if (event.httpMethod === "POST") {
         const data = JSON.parse(event.body)
-
-        if (data.message && data.message.length) {
-            let shortMessage = data.message.split(" ").slice(0, 10).join(" ")
-            if (shortMessage.length < data.message.length)
+        const message = data.message ? data.message.trim() : ""
+        if (message.length >= 30) {
+            let shortMessage = message.split(" ").slice(0, 10).join(" ")
+            if (shortMessage.length < message.length)
                 shortMessage += "..."
 
             sendMail({
@@ -37,7 +37,7 @@ const handler: Handler = (event: APIGatewayEvent, context: Context, callback: Ca
                 replyTo: `${data.name} <${data.email}>`,
                 to: "info@ourworldindata.org",
                 subject: `User Feedback: ${shortMessage}`,
-                text: data.message
+                text: message + "\n\n-----\n" + data.environment
             }).then(() => console.log("Message sent"))
             .catch((err) => console.error(err))
         }
